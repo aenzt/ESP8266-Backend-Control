@@ -11,7 +11,7 @@ app.use(cors({
 const io = require('socket.io')(http, {
     cors: {
         origin: "*",
-        allowedHeaders: ["Origin"]
+        methods: ["GET", "POST"]
     }
 });
 
