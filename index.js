@@ -1,8 +1,7 @@
-require('dotenv').config()
-const express = require('express')
-const app = express()
-const mongoose = require('mongoose')
-const bodyParser = require('body-parser')
+const express = require('express');
+const app = express();
+const mongoose = require('mongoose');
+const bodyParser = require('body-parser');
 const cors = require('cors');
 const http = require('http').Server(app);
 
@@ -128,5 +127,5 @@ User.watch().on('change', (change) => {
 });
 
 var server = http.listen(process.env.PORT || 3000, () => {
-    console.log(`server is running on`, server.address().process.env.PORT)
+    console.log(`server is running on`, process.env.PORT || 3000)
 })
