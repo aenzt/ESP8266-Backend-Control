@@ -3,6 +3,7 @@ const express = require('express')
 const app = express()
 const port = 3000
 const mongoose = require('mongoose')
+const bodyParser = require('body-parser')
 const cors = require('cors');
 const http = require('http').Server(app);
 
@@ -22,6 +23,8 @@ db.once('open', () => console.log('Connected to db'))
 
 const User = require('./models/Access');
 app.use(express.json())
+app.use(bodyParser.json()) // for parsing application/json
+app.use(bodyParser.urlencoded({ extended: true })) // for parsing application/x-www-form-urlencoded
 
 app.get('/', async (req, res) => {
     const access = await User.find();
@@ -52,22 +55,27 @@ app.get('/get/:uid', async (req, res) => {
 });
 
 app.post('/update/:uid', async (req, res) => {
-    const q = await User.findOne({"uid":req.params.uid});
+    let uid = req.params.uid
+    let q = await User.findOne({"uid":uid});
+    console.log(req.body);
     var date = new Date;
+    let doc;
     if (q.presence == false){
         let dateTime = {
             "entryTime": date,
-            "presence": true
+            "presence": true,
+            "latestTemp": req.body.latestTemp
         };
-        const doc = await User.findOneAndUpdate({"uid":req.params.uid}, dateTime, {
+        doc = await User.findOneAndUpdate({"uid":uid}, dateTime, {
             new: true
         });
     } else{
         let dateTime = {
             "exitTime": date,
-            "presence": false
+            "presence": false,
+            "latestTemp": req.body.latestTemp
         };
-        const doc = await User.findOneAndUpdate({"uid":req.params.uid}, dateTime, {
+        doc = await User.findOneAndUpdate({"uid":uid}, dateTime, {
             new: true
         });
     }
@@ -76,7 +84,8 @@ app.post('/update/:uid', async (req, res) => {
             io.emit('update', docs);
         }
     })
-    res.status(200).send();
+    q = await User.findOne({"uid":req.body.UUID});
+    res.send(q);
 });
 
 app.get('/check/:uid', async (req, res) => {

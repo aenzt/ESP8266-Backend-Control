@@ -1,3 +1,4 @@
+const { Double } = require('mongodb');
 const mongoose = require('mongoose');
 
 const UserSchema = new mongoose.Schema({
@@ -7,6 +8,7 @@ const UserSchema = new mongoose.Schema({
     vacStat1: Boolean,
     vacStat2: Boolean,
     presence: Boolean,
+    latestTemp: Number,
     entryTime: Date,
     exitTime: Date
 });
